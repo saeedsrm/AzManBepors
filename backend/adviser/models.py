@@ -8,8 +8,12 @@ class Category(models.Model):
         verbose_name_plural = "دسته بندی ها"
 
     name = models.CharField(max_length=20, unique=True, verbose_name="نام دسته بندی")
-    sub_category = models.CharField(max_length=20, null=True, blank=True, verbose_name="زیر دسته بندی")
+    sub_category = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='scategory',
+                                     verbose_name="زیر دسته بندی")
     is_sub = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(models.Model):
@@ -18,6 +22,9 @@ class Tag(models.Model):
         verbose_name_plural = "برچسب سوالات"
 
     name = models.CharField(max_length=20, unique=True, verbose_name="نام")
+
+    def __str__(self):
+        return self.name
 
 
 class CreateNewQuestion(models.Model):

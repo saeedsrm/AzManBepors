@@ -82,3 +82,4 @@ class QuestionDeleteView(APIView):
         self.check_object_permissions(request, question)
         question.delete()
         return Response({'message': 'question deleted'}, status=status.HTTP_200_OK)
+
