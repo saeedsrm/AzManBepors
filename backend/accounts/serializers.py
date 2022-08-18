@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Responder
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.response import Response
@@ -26,7 +26,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'email': {'required': True},
             'username': {'required': True},
             'major': {'required': True},
-            'is_active': {'required': True},
         }
 
     def validate(self, attrs):
@@ -36,6 +35,24 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        try:
+            validated_data['city'] == ''
+        except:
+            validated_data['city'] = "null"
+
+        try:
+            validated_data['province'] == ''
+        except:
+            validated_data['province'] = "null"
+        try:
+            validated_data['collage'] == ''
+        except:
+            validated_data['collage'] = "null"
+        try:
+            validated_data['entering_year'] == ''
+        except:
+            validated_data['entering_year'] = None
+
         user = CustomUser.objects.create(
             username=validated_data['username'],
             student_code=validated_data['student_code'],
@@ -44,14 +61,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             major=validated_data['major'],
+            city=validated_data['city'],
+            province=validated_data['province'],
             is_active=validated_data['is_active'],
+            collage=validated_data['collage'],
+            entering_year=validated_data['entering_year']
         )
 
         user.set_password(validated_data['password'])
         user.save()
 
         return Response({
-            "user": user,
             "message": "User Created Successfully.  Now perform Login to get your token",
         })
 
@@ -66,3 +86,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         return token
 
+
+class ResponderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Responder
+        fields = '__all__'
