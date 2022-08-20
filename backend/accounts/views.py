@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from permission import IsOwner
-from .models import CustomUser
+from .models import CustomUser,Responder
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -44,25 +44,29 @@ class UserDeleteView(APIView):
         return Response({'message': 'user deleted'}, status=status.HTTP_200_OK)
 
 
-class CreateResponder(APIView):
-    permission_classes = [IsAuthenticated, ]
+class CreateResponder(generics.CreateAPIView):
+    queryset = Responder.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = ResponderSerializer
 
     def post(self, request):
         srz_data = ResponderSerializer(data=request.data)
         if srz_data.is_valid():
-            user = self.context['request'].user
-            # filtering = CustomUser.objects.filter(first_name__isnull=False, last_name__isnull=False,
-            #                                       fullname__isnull=False,
+            print(request.user)
+            # user = self.context['request'].user
+            # print(user)
+            # print(request.user)
+            # filtering = CustomUser.objects.filter(user__first_name__isnull=False, user__last_name__isnull=False,
+            #                                       user__fullname__isnull=False,
             #                                       username__isnull=False, email__isnull=False, collage__isnull=False,
-            #                                       major__isnull=False, province__isnull=False, city__isnull=False,
+            #                                       major__isnull=False, user__province__isnull=False, city__isnull=False,
             #                                       entering_year__isnull=False, phone_number__isnull=False,
             #                                       student_code__isnull=False)
             # if filtering:
             #     return Response("please complete your profile")
             # else:
 
-            srz_data.save(user=user)
-            print(user)
+            srz_data.save(user=request.user)
+
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
