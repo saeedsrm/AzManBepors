@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from permission import IsOwner
-from .models import CustomUser,Responder
+from .models import CustomUser, Responder
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import RegisterSerializer, ResponderSerializer
 from rest_framework import generics, status
+from django.db.models import Q
 
 
 class RegisterView(generics.CreateAPIView):
@@ -52,21 +53,23 @@ class CreateResponder(generics.CreateAPIView):
     def post(self, request):
         srz_data = ResponderSerializer(data=request.data)
         if srz_data.is_valid():
-            print(request.user)
-            # user = self.context['request'].user
-            # print(user)
-            # print(request.user)
-            # filtering = CustomUser.objects.filter(user__first_name__isnull=False, user__last_name__isnull=False,
-            #                                       user__fullname__isnull=False,
-            #                                       username__isnull=False, email__isnull=False, collage__isnull=False,
-            #                                       major__isnull=False, user__province__isnull=False, city__isnull=False,
-            #                                       entering_year__isnull=False, phone_number__isnull=False,
-            #                                       student_code__isnull=False)
-            # if filtering:
-            #     return Response("please complete your profile")
-            # else:
+            user = CustomUser.objects.filter(pk=request.user.id)
+            if user:
+                print(user)
+                filtering = user.filter(Q(first_name='') |
+                                        Q(last_name='') |
+                                        Q(fullname='') |
+                                        Q(username='') | Q(email='') |
+                                        Q(collage='') |
+                                        Q(major='') | Q(province='') |
+                                        Q(city='') | Q(entering_year=None))
 
-            srz_data.save(user=request.user)
+                if filtering:
+                    return Response("please complete your profile")
+                else:
 
-            return Response(srz_data.data, status=status.HTTP_201_CREATED)
+                    srz_data.save(user=request.user)
+                    print(filtering)
+
+                    return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)

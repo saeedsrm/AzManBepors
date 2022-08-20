@@ -43,11 +43,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         try:
             validated_data['province'] == ''
         except:
-            validated_data['province'] = "null"
+            validated_data['province'] = None
         try:
             validated_data['collage'] == ''
         except:
-            validated_data['collage'] = "null"
+            validated_data['collage'] = None
         try:
             validated_data['entering_year'] == ''
         except:

@@ -31,13 +31,28 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-# class ResponderUserAdmin(UserAdmin):
-#     model = Responder
-#     list_display_links = ('user.fullname'
-#                           )
-#     list_display = (
-#         'user.fullname',)
+class ResponderAdmin(admin.ModelAdmin):
+    model = Responder
+    list_display_links = ('get_username', 'get_email', 'get_student_code',
+                          )
+    list_display = (
+        'get_username', 'get_email', 'get_student_code',)
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    get_username.short_description = 'نام کاربری'
+
+    def get_email(self, obj):
+        return obj.user.email
+
+    get_email.short_description = 'ایمیل کاربر'
+
+    def get_student_code(self, obj):
+        return obj.user.student_code
+
+    get_student_code.short_description = 'شماره دانشجویی'
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Responder)
+admin.site.register(Responder, ResponderAdmin)

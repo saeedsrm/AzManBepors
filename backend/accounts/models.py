@@ -78,7 +78,12 @@ class Responder(models.Model):
     class Meta:
         verbose_name = 'کاربر راهنما'
         verbose_name_plural = 'کاربران راهنما'
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,verbose_name="کاربر")
+    user = models.ForeignKey(CustomUser, unique=True,on_delete=models.CASCADE,verbose_name="کاربر")
     fields_of_activity = models.TextField(verbose_name="زمینه های فعالیت")
     interests = models.TextField(verbose_name="علاقه مندی ها")
     descriptions = models.TextField(verbose_name="توضیحات")
+
+    def __str__(self):
+        return f'{self.user.email}'
+
+
