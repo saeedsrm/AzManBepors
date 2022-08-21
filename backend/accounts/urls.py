@@ -14,4 +14,5 @@ urlpatterns = [
     path('user-update/', UserUpdateView.as_view(), name='user-update'),
     path('user-delete/', UserDeleteView.as_view(), name='user-delete'),
     path('create-responder/', CreateResponder.as_view(), name='user-responder'),
+
 ]

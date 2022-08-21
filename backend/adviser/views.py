@@ -5,7 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import *
-from permission import IsOwnerOrReadOnly
+from permission import IsOwnerOrReadOnly, IsResponder
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class CategoryCreateView(APIView):
@@ -83,3 +84,21 @@ class QuestionDeleteView(APIView):
         question.delete()
         return Response({'message': 'question deleted'}, status=status.HTTP_200_OK)
 
+
+class AnswerTheQuestion(APIView):
+    permission_classes = [IsResponder, ]
+    serializer_class = TagSerializer
+
+    def post(self, request, pk):
+        srz_data = AnswerSerializer(data=request.data)
+        if srz_data.is_valid():
+            try:
+                question = CreateNewQuestion.objects.get(pk=pk)
+                if question.status == "open" or question.status == "waiting" or question.status == 'following':
+                    srz_data.save(author=request.user, question=question)
+                    return Response(srz_data.data, status=status.HTTP_201_CREATED)
+                elif question.status == "answered" or question.status == "closed":
+                    return Response("This question is closed, you cannot answer")
+            except CreateNewQuestion.DoesNotExist:
+                return Response("This question does not exists.")
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)

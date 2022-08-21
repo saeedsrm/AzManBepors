@@ -14,6 +14,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
+    author = UserEmailNameRelationalField(read_only=True)
+
     class Meta:
         model = Answer
         fields = '__all__'
