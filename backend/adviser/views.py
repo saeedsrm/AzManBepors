@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import *
-from permission import IsOwnerOrReadOnly, IsResponder
-from django.core.exceptions import ObjectDoesNotExist
+from permission import IsOwnerOrReadOnly
+
 
 
 class CategoryCreateView(APIView):
