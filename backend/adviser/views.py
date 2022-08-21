@@ -93,15 +93,20 @@ def change_status(pk):
 
 
 class AnswerTheQuestion(APIView):
-    permission_classes = [IsResponder, ]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = AnswerSerializer
 
     def post(self, request, pk):
+
         srz_data = AnswerSerializer(data=request.data)
         if srz_data.is_valid():
+
             try:
                 question = CreateNewQuestion.objects.get(pk=pk)
-                user = Responder.objects.get(user=request.user.id)
+                try:
+                    user = Responder.objects.get(user=request.user.id)
+                except Responder.DoesNotExist:
+                    return Response('permission denied, you are not the responder')
                 if question.status == "open" or question.status == "waiting" or question.status == 'following':
                     srz_data.save(author=user, question=question)
                     change_status(pk)

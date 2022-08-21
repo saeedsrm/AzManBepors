@@ -57,7 +57,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     entering_year = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=30, verbose_name="تلفن همراه", null=True, blank=True, unique=True)
     student_code = models.CharField(max_length=13,null=True, blank=True, unique=True)
-    is_staff = models.BooleanField(default=True, verbose_name="آیا مدیر است؟")
+    is_staff = models.BooleanField(default=False, verbose_name="آیا مدیر است؟")
     is_active = models.BooleanField(default=False, verbose_name='آیا فعال است؟')
     score = models.IntegerField(default=0, null=True, blank=True, verbose_name="امتیاز")
     date_joined = jmodels.jDateField(auto_now_add=True, verbose_name="تاریخ عضویت")
