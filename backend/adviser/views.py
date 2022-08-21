@@ -85,17 +85,26 @@ class QuestionDeleteView(APIView):
         return Response({'message': 'question deleted'}, status=status.HTTP_200_OK)
 
 
+def change_status(pk):
+    question = CreateNewQuestion.objects.get(pk=pk)
+    question.status = 'answered'
+    question.save()
+    # return question
+
+
 class AnswerTheQuestion(APIView):
     permission_classes = [IsResponder, ]
-    serializer_class = TagSerializer
+    serializer_class = AnswerSerializer
 
     def post(self, request, pk):
         srz_data = AnswerSerializer(data=request.data)
         if srz_data.is_valid():
             try:
                 question = CreateNewQuestion.objects.get(pk=pk)
+                user = Responder.objects.get(user=request.user.id)
                 if question.status == "open" or question.status == "waiting" or question.status == 'following':
-                    srz_data.save(author=request.user, question=question)
+                    srz_data.save(author=user, question=question)
+                    change_status(pk)
                     return Response(srz_data.data, status=status.HTTP_201_CREATED)
                 elif question.status == "answered" or question.status == "closed":
                     return Response("This question is closed, you cannot answer")

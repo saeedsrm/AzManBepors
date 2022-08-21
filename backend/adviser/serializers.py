@@ -14,7 +14,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    author = UserEmailNameRelationalField(read_only=True)
+    author = AuthorEmailNameRelationalField(read_only=True)
+    question = QuestionAnswerRelationalField(read_only=True)
 
     class Meta:
         model = Answer
@@ -29,8 +30,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     answers = serializers.SerializerMethodField()
-    category = serializers.SlugRelatedField( slug_field='name',queryset=Category.objects.all())
-    tag = serializers.SlugRelatedField(slug_field='name',queryset=Tag.objects.all())
+    category = serializers.SlugRelatedField(slug_field='name', queryset=Category.objects.all())
+    tag = serializers.SlugRelatedField(slug_field='name', queryset=Tag.objects.all())
     author = UserEmailNameRelationalField(read_only=True)
 
     class Meta:

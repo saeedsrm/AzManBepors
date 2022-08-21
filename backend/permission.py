@@ -34,5 +34,5 @@ class IsResponder(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-        if request.user.is_staff:
+        if not request.user.is_staff:
             return obj

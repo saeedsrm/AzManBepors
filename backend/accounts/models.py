@@ -57,7 +57,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     entering_year = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=30, verbose_name="تلفن همراه", null=True, blank=True, unique=True)
     student_code = models.CharField(max_length=13,null=True, blank=True, unique=True)
-    is_staff = models.BooleanField(default=False, verbose_name="آیا مدیر است؟")
+    is_staff = models.BooleanField(default=True, verbose_name="آیا مدیر است؟")
     is_active = models.BooleanField(default=False, verbose_name='آیا فعال است؟')
     score = models.IntegerField(default=0, null=True, blank=True, verbose_name="امتیاز")
     date_joined = jmodels.jDateField(auto_now_add=True, verbose_name="تاریخ عضویت")
@@ -78,7 +78,7 @@ class Responder(models.Model):
     class Meta:
         verbose_name = 'کاربر راهنما'
         verbose_name_plural = 'کاربران راهنما'
-    user = models.ForeignKey(CustomUser, unique=True,on_delete=models.CASCADE,verbose_name="کاربر")
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,verbose_name="کاربر")
     fields_of_activity = models.TextField(verbose_name="زمینه های فعالیت")
     interests = models.TextField(verbose_name="علاقه مندی ها")
     descriptions = models.TextField(verbose_name="توضیحات")
