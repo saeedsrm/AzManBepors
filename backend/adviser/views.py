@@ -124,4 +124,4 @@ class SearchQuestionsAPIView(generics.ListAPIView):
     queryset = CreateNewQuestion.objects.all()
     serializer_class = QuestionSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['category__name', 'tag__name']
+    search_fields = ['category__name', 'tag__name', 'question']
