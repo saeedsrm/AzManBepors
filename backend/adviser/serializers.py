@@ -1,4 +1,6 @@
-from rest_framework import serializers
+from copy import copy
+
+from rest_framework import serializers, validators
 from .models import CreateNewQuestion, Category, Tag, Answer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -41,3 +43,22 @@ class QuestionSerializer(serializers.ModelSerializer):
     def get_answers(self, obj):
         result = obj.answers.all()
         return AnswerSerializer(instance=result, many=True).data
+    #
+    # def run_validators(self, value):
+    #     for validator in self.validators:
+    #         if isinstance(validator, validators.UniqueTogetherValidator):
+    #             self.validators.remove(validator)
+    #     super(QuestionSerializer, self).run_validators(value)
+
+    # def create(self, validated_data):
+    #     category = Category.objects.get_or_create(validated_data['category'])
+    #     print(category)
+    #     tag = Tag.objects.get_or_create(validated_data['tag'])
+    #     question = CreateNewQuestion.objects.create(
+    #
+    #         category=category, tag=tag, question=validated_data['question'], status=validated_data['status']
+    #     )
+    #     question.save(author=validated_data['request'].user)
+    #     print(question)
+    #
+    #     return question

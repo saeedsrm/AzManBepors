@@ -18,6 +18,8 @@ class Category(models.Model):
         return self.name
 
 
+
+
 class Tag(models.Model):
     class Meta:
         verbose_name = "برچسب سوال"

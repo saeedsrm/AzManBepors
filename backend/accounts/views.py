@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from permission import IsOwner
 from .models import CustomUser, Responder
-from .serializers import MyTokenObtainPairSerializer
+from .serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import RegisterSerializer, ResponderSerializer
@@ -28,7 +28,7 @@ class UserUpdateView(APIView):
     def put(self, request):
         user = CustomUser.objects.get(email=request.user)
         self.check_object_permissions(request, user)
-        srz_data = RegisterSerializer(instance=user, data=request.data, partial=True)
+        srz_data = UserSerializer(instance=user, data=request.data, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
@@ -61,7 +61,7 @@ class CreateResponder(generics.CreateAPIView):
                                         Q(fullname='') |
                                         Q(username='') | Q(email='') |
                                         Q(collage='') |
-                                        Q(major='') | Q(province='') |
+                                        Q(major='') | Q(province='') | Q(phone_number='') |
                                         Q(city='') | Q(entering_year=None))
 
                 if filtering:

@@ -10,4 +10,5 @@ urlpatterns = [
     path('update-question/<int:pk>/', QuestionUpdateView.as_view(), name='update-question'),
     path('delete-question/<int:pk>/', QuestionDeleteView.as_view(), name='delete-question'),
     path('answer-question/<int:pk>/', AnswerTheQuestion.as_view(), name='answer-question'),
+    path('search-question/',SearchQuestionsAPIView.as_view(), name='search-question'),
 ]

@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from .serializers import *
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import *
 from permission import IsOwnerOrReadOnly
 
+from rest_framework import filters
 
 
 class CategoryCreateView(APIView):
@@ -44,11 +45,12 @@ class QuestionListView(APIView):
     def get(self, request):
         questions = CreateNewQuestion.objects.all()
         srz_data = QuestionSerializer(instance=questions, many=True).data
+        srz_data = srz_data.order_by('-data_create')
         return Response(srz_data, status=status.HTTP_200_OK)
 
 
-class QuestionCreateView(APIView):
-    """
+class QuestionCreateView(generics.CreateAPIView):
+    """z
         Create a new question
     """
     permission_classes = [IsAuthenticated, ]
@@ -116,3 +118,10 @@ class AnswerTheQuestion(APIView):
             except CreateNewQuestion.DoesNotExist:
                 return Response("This question does not exists.")
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SearchQuestionsAPIView(generics.ListAPIView):
+    queryset = CreateNewQuestion.objects.all()
+    serializer_class = QuestionSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['category__name', 'tag__name']

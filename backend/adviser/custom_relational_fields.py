@@ -3,12 +3,12 @@ from rest_framework import serializers
 
 class UserEmailNameRelationalField(serializers.RelatedField):
     def to_representation(self, value):
-        return f'{value.email}'
+        return f'{value.phone_number}'
 
 
 class AuthorEmailNameRelationalField(serializers.RelatedField):
     def to_representation(self, value):
-        return f'{value.user.email}'
+        return f'{value.user.phone_number}'
 
 
 class QuestionTagNameRelationalField(serializers.RelatedField):

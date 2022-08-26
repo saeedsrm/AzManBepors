@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from .models import CustomUser, Responder
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from adviser.custom_relational_fields import UserEmailNameRelationalField
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-        required=True,
+        required=False,
         validators=[UniqueValidator(queryset=CustomUser.objects.all())]
     )
 
@@ -18,15 +19,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = "__all__"
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-            'phone_number': {'required': True},
-            'student_code': {'required': True},
-            'email': {'required': True},
-            'username': {'required': True},
-            'major': {'required': True},
-        }
+
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -38,7 +31,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         try:
             validated_data['city'] == ''
         except:
-            validated_data['city'] = "null"
+            validated_data['city'] = None
 
         try:
             validated_data['province'] == ''
@@ -52,6 +45,34 @@ class RegisterSerializer(serializers.ModelSerializer):
             validated_data['entering_year'] == ''
         except:
             validated_data['entering_year'] = None
+        try:
+            validated_data['username'] == ''
+        except:
+            validated_data['username'] = None
+        try:
+            validated_data['student_code'] == ''
+        except:
+            validated_data['student_code'] = None
+        try:
+            validated_data['first_name'] == ''
+        except:
+            validated_data['first_name'] = None
+        try:
+            validated_data['last_name'] == ''
+        except:
+            validated_data['last_name'] = None
+        try:
+            validated_data['major'] == ''
+        except:
+            validated_data['major'] = None
+        try:
+            validated_data['fullname'] == ''
+        except:
+            validated_data['fullname'] = None
+        try:
+            validated_data['email'] == ''
+        except:
+            validated_data['email'] = None
 
         user = CustomUser.objects.create(
             username=validated_data['username'],
@@ -65,7 +86,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             province=validated_data['province'],
             is_active=validated_data['is_active'],
             collage=validated_data['collage'],
-            entering_year=validated_data['entering_year']
+            entering_year=validated_data['entering_year'],
+            fullname=validated_data['fullname']
         )
 
         user.set_password(validated_data['password'])
@@ -75,6 +97,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     @classmethod
@@ -82,7 +110,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
 
         # Add custom claims
-        token['username'] = user.username
+        token['phone_number'] = user.phone_number
         return token
 
 
