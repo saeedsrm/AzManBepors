@@ -15,20 +15,23 @@ class CustomUserAdmin(UserAdmin):
         'first_name', 'last_name', 'username', 'phone_number', 'is_active', 'date_joined', 'email',)
     list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        (None,
+         {'fields': (
+             'email', 'password', 'first_name', 'last_name', 'fullname', 'username', 'collage', 'student_code', 'score',
+             'city', 'province', 'entering_year',)}),
+        ('محدودیت کاربر', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': (
                 'fullname', 'first_name', 'last_name', 'username', 'phone_number', 'email', 'collage', 'student_code',
-                'city', 'province', 'entering_year',
+                'city', 'province', 'entering_year', 'score',
                 'password1', 'password2', 'is_staff', 'is_active')}
          ),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
+    search_fields = ('phone_number',)
+    ordering = ('-date_joined',)
 
 
 class ResponderAdmin(admin.ModelAdmin):
